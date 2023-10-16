@@ -1,0 +1,7 @@
+{
+  "name": "chests",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
