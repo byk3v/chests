@@ -1,13 +1,24 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>chests</ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>VOV Chests</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="signOut()" *ngIf="user | async"> <ion-icon name="log-out-outline" slot="icon-only"></ion-icon> </ion-button>
+
+      <ion-button (click)="openLogin()" *ngIf="(user | async) === false"> Sign in </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">chests</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let chest of chests" [routerLink]="[chest.id]" button>
+      <ion-label
+      >{{chest.title }}
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="user | async">
+    <ion-fab-button (click)="createChest()">
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
