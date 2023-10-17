@@ -49,7 +49,7 @@ export class ImageExtractionComponent {
 
   extractText() {
     const temp =  this.extractedText.replace(/[\r\n]+/g, ' ');
-    const substrings = temp.split(/\s+(Crypt|Arena|Bank|Citadel(?! Chest)|Clan wealth|Epic inferno squad|personal reward|Epic Undead squad|Rush tournament| Heroic monster| Mercenary exchange)/g);
+    const substrings = temp.split(/\s+(Crypt|Arena|Bank|Citadel(?! Chest)|Clan wealth|Epic inferno squad|personal reward|Epic Undead squad|Rush tournament| Heroic monster| Mercenary Exchange)/g);
 
     const parsedData = [];
 
