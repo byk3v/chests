@@ -39,35 +39,35 @@ export class ChestsPage implements OnInit {
       player: 'player1',
       type: 'crypt'
     }
-    const alert = await this.alertController.create({
-      header: 'Create a Chest',
-      message: 'Enter the data!',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-        },
-        {
-          text: 'Create chest',
-          handler: async (data) => {
-            const loading = await this.loadingController.create();
-            await loading.present();
+    // const alert = await this.alertController.create({
+    //   header: 'Create a Chest',
+    //   message: 'Enter the data!',
+    //   buttons: [
+    //     {
+    //       text: 'Cancel',
+    //       role: 'cancel',
+    //     },
+    //     {
+    //       text: 'Create chest',
+    //       handler: async (data) => {
+    //         const loading = await this.loadingController.create();
+    //         await loading.present();
+    //
+    //         const newChest = await this.data.createChest(testChest);
+    //         console.log('new chest: ', newChest);
+    //         if (newChest) {
+    //           // @ts-ignore
+    //           this.chests = await this.data.getChests();
+    //           await loading.dismiss();
+    //
+    //           await this.router.navigateByUrl(`/chests/${newChest.data.id}`);
+    //         }
+    //       },
+    //     },
+    //   ],
+    // });
 
-            const newChest = await this.data.createChest(testChest);
-            console.log('new chest: ', newChest);
-            if (newChest) {
-              // @ts-ignore
-              this.chests = await this.data.getChests();
-              await loading.dismiss();
-
-              await this.router.navigateByUrl(`/chests/${newChest.data.id}`);
-            }
-          },
-        },
-      ],
-    });
-
-    await alert.present();
+    await this.data.createChest(testChest);
   }
 
   signOut() {
