@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import {ParsedChest} from "../../models/parsed-chest";
 import Tesseract from "tesseract.js";
+import {createClient} from "@supabase/supabase-js";
+import {environment} from "../../../environments/environment";
+import {DataService} from "../../services/data.service";
 
 @Component({
   selector: 'app-upload',
@@ -11,6 +14,8 @@ export class UploadPage {
   extractedText: string = '';
   parsedData:ParsedChest[] = [];
   substringsMod:string[] = [];
+
+  constructor(private dataService: DataService) {}
 
   onFileSelected(event: any) {
     const files = event.target.files;
@@ -72,7 +77,12 @@ export class UploadPage {
     }
 
     this.parsedData = parsedData;
+    this.insertChestData(parsedData);
     console.log(this.parsedData);
+  }
+
+  insertChestData(data: ParsedChest[]){
+    this.dataService.insertChests(data);
   }
 
 }

@@ -53,7 +53,7 @@ export interface ChestUI {
     level: number
     player_id: number
     chestType: number
-    uploaded_by: number
+    uploaded_by: string
 }
 
 export interface User {

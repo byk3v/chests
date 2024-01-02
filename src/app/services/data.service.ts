@@ -56,24 +56,33 @@ export class DataService {
             .then((result) => result.data)
     }
 
-    async createChest(parsedChest: ParsedChest) {
+    async insertChests(parsedData: ParsedChest[]){
         const user = await this.supabase.auth.getUser();
-        if (user !== null && user !== undefined && user.data !== null && user.data.user !== null) {
 
-            const newchest: ChestUI = {
-                title: parsedChest.title,
-                source: parsedChest.type,
-                level: chestLevel,
-                player_id: 1,
-                chestType: 1,
-                uploaded_by: parseInt(user.data.user.id),
-            };
-            console.log("entro a crear chest, chest:", newchest);
-            return this.supabase.from(CHEST_DB).insert(newchest).select().single();
+        if (user !== null && user !== undefined && user.data !== null && user.data.user !== null) {
+            console.log("Mi log:", user.data.user.id);
+            for (const chest of parsedData) {
+                const newChest: ChestUI = {
+                    title: chest.title,
+                    source: chest.type,
+                    level: chestLevel,
+                    player_id: 1,
+                    chestType: 1,
+                    uploaded_by: user.data.user.id,
+                };
+                console.log("chestObject to send:", newChest);
+                this.createChest(newChest);
+            }
         } else {
             console.log("getUser devolvio null");
-            return null;
         }
+    }
+
+    createChest(newchest: ChestUI) {
+            console.log("entro a crear chest, chest:", newchest);
+           // return this.supabase.from(CHEST_DB).insert(newchest).select().single();
+        const response =  this.supabase.from(CHEST_DB).insert(newchest);
+        console.log(response);
     }
 
     getGroupById(id: any) {

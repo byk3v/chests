@@ -33,43 +33,6 @@ export class ChestsPage implements OnInit {
     console.log('groups: ', this.chests);
   }
 
-  async createChest() {
-    const testChest: ParsedChest = {
-      title: 'title',
-      player: 'player1',
-      type: 'crypt'
-    }
-    // const alert = await this.alertController.create({
-    //   header: 'Create a Chest',
-    //   message: 'Enter the data!',
-    //   buttons: [
-    //     {
-    //       text: 'Cancel',
-    //       role: 'cancel',
-    //     },
-    //     {
-    //       text: 'Create chest',
-    //       handler: async (data) => {
-    //         const loading = await this.loadingController.create();
-    //         await loading.present();
-    //
-    //         const newChest = await this.data.createChest(testChest);
-    //         console.log('new chest: ', newChest);
-    //         if (newChest) {
-    //           // @ts-ignore
-    //           this.chests = await this.data.getChests();
-    //           await loading.dismiss();
-    //
-    //           await this.router.navigateByUrl(`/chests/${newChest.data.id}`);
-    //         }
-    //       },
-    //     },
-    //   ],
-    // });
-
-    await this.data.createChest(testChest);
-  }
-
   signOut() {
     this.authService.signOut();
   }

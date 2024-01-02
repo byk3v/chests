@@ -6,7 +6,7 @@
 
 <ion-content [fullscreen]="true">
     <input type="file" (change)="onFileSelected($event)" multiple/>
-    <button (click)="extractText()">Extract Text</button>
+
     <div>
         <p>{{ extractedText }}</p>
     </div>
