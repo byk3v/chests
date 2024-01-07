@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {ParsedChest} from "../../models/parsed-chest";
+import {ChestType, ParsedChest} from "../../models/parsed-chest";
 import Tesseract from "tesseract.js";
 import {createClient} from "@supabase/supabase-js";
 import {environment} from "../../../environments/environment";
@@ -73,12 +73,28 @@ export class UploadPage {
       const typeMatch = this.substringsMod[i].match(/Source:\s(.*)/);
       const type = typeMatch ? typeMatch[1] : '';
 
-      parsedData.push({ title, player, type });
+      const {level, chestType} = this.parseString(type);
+
+      parsedData.push({ title, player, level, chestType });
     }
 
     this.parsedData = parsedData;
     this.insertChestData(parsedData);
     console.log(this.parsedData);
+  }
+
+  parseString(originalString: string): ChestType {
+    const regex = /^Level (\d+)\s(.+)$/;
+
+    const match = originalString.match(regex);
+
+    if (match) {
+      const level = parseInt(match[1], 10);
+      const chestType = match[2];
+      return { level, chestType };
+    } else {
+      return { level: null, chestType: originalString };
+    }
   }
 
   insertChestData(data: ParsedChest[]){

@@ -1,7 +1,13 @@
 export interface ParsedChest {
     title: string;
     player: string;
-    type: string;
+    chestType: string;
+    level: number |null;
+}
+
+export interface ChestType {
+    level: number | null;
+    chestType: string;
 }
 
 export interface Message2 {
@@ -40,19 +46,18 @@ export interface ChestBD {
     id: number
     title: string
     source: string
-    level: number
+    level: number | null
     player: PlayerBD
-    chestType: ChestTypeBD
+    chest_type_id: ChestTypeBD
     uploaded_by: User
-    created_at: string
+    created_at: Date
 }
 
 export interface ChestUI {
     title: string
     source: string
-    level: number
-    player_id: number
-    chestType: number
+    level: number | null
+    player_name: string
     uploaded_by: string
 }
 

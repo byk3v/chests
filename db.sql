@@ -24,6 +24,9 @@ create table player (
   name text not null,
   clan_id bigint references clan on delete cascade not null,
   active boolean default true,
+  guards_level int,
+  specialists_level int,
+  monsters_level int,
   might int
 );
 
@@ -49,10 +52,100 @@ begin
 end;
 $$ language plpgsql security definer;
 
+-- Function to Retrieve player id given the name or insert the player if it does not exist
+CREATE OR REPLACE FUNCTION insert_or_get_player(player_name text, clan_id bigint, might int)
+RETURNS bigint AS $$
+DECLARE
+    existing_player_id bigint;
+BEGIN
+    -- Check if player with the given name already exists
+    SELECT id INTO existing_player_id FROM player WHERE name = player_name LIMIT 1;
+
+    -- If player exists, return its ID
+    IF existing_player_id IS NOT NULL THEN
+        RETURN existing_player_id;
+    END IF;
+
+    -- If player doesn't exist, insert a new player
+    INSERT INTO player (name, clan_id, active, might)
+    VALUES (player_name, clan_id, true, might)
+    RETURNING id INTO existing_player_id;
+
+    -- Return the ID of the newly created player
+    RETURN existing_player_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to Retrieve chestType id given the name or insert the chestType if it does not exist
+CREATE OR REPLACE FUNCTION insert_or_get_chest_type(p_chest_source text)
+RETURNS bigint AS $$
+DECLARE
+    existing_chest_type_id bigint;
+BEGIN
+    -- Check if chest type with the given name already exists
+    SELECT id INTO existing_chest_type_id FROM chest_type WHERE source = chest_source LIMIT 1;
+
+    -- If chest_type exists, return its ID
+    IF existing_chest_type_id IS NOT NULL THEN
+        RETURN existing_chest_type_id;
+    END IF;
+
+    -- If chest type doesn't exist, insert a new chest type
+    INSERT INTO chest_type (source)
+    VALUES (p_chest_source)
+    RETURNING id INTO existing_chest_type_id;
+
+    -- Return the ID of the newly created chest type
+    RETURN existing_chest_type_id;
+END;
+$$ LANGUAGE plpgsql;
+
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 
+---- Function to Retrieve chestType_id, player_id and insert the chest
+CREATE OR REPLACE FUNCTION insert_chest_with_player_and_type(
+    p_player_name text,
+    p_clan_id bigint,
+    p_might int,
+    p_guards_lvl int,
+    p_specialists_lvl int,
+    p_monsters_lvl int,
+    p_chest_source text,
+    p_chest_level int,
+    p_chest_title text,
+    p_uploaded_by uuid)
+RETURNS void AS $$
+DECLARE
+    player_id bigint;
+    chest_type_id bigint;
+BEGIN
+    -- Insert or get player
+    SELECT id INTO player_id FROM player WHERE name = p_player_name LIMIT 1;
+
+    IF player_id IS NULL THEN
+        -- Player doesn't exist, insert a new player
+        INSERT INTO player (name, clan_id, active, might, guards_level, specialists_level, monsters_level)
+        VALUES (p_player_name, p_clan_id, true, p_might, p_guards_lvl, p_specialists_lvl, p_monsters_lvl)
+        RETURNING id INTO player_id;
+    END IF;
+
+    -- Insert or get chest type
+    SELECT id INTO chest_type_id FROM chest_type WHERE source = p_chest_source LIMIT 1;
+
+    IF chest_type_id IS NULL THEN
+        -- Chest type doesn't exist, insert a new chest type
+        INSERT INTO chest_type (source)
+        VALUES (p_chest_source)
+        RETURNING id INTO chest_type_id;
+    END IF;
+
+    -- Insert chest
+    INSERT INTO chest (title, source, level, player_id, chest_type_id, uploaded_by)
+    VALUES (p_chest_title, p_chest_source, p_chest_level, player_id, chest_type_id, p_uploaded_by);
+END;
+$$ LANGUAGE plpgsql;
 
 INSERT INTO chest_type (source)
 VALUES

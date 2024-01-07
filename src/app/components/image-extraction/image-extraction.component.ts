@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Tesseract from 'tesseract.js';
 import {ParsedChest} from "../../models/parsed-chest";
+import {ChestType} from "../../models/parsed-chest";
 
 @Component({
   selector: 'app-image-extraction',
@@ -68,11 +69,27 @@ export class ImageExtractionComponent {
       const typeMatch = this.substringsMod[i].match(/Source:\s(.*)/);
       const type = typeMatch ? typeMatch[1] : '';
 
-      parsedData.push({ title, player, type });
+      const {level, chestType} = this.parseString(type);
+
+      parsedData.push({ title, player, level, chestType });
     }
 
     this.parsedData = parsedData;
     console.log(this.parsedData);
+  }
+
+  parseString(originalString: string): ChestType {
+    const regex = /^Level (\d+)\s(.+)$/;
+
+    const match = originalString.match(regex);
+
+    if (match) {
+      const level = parseInt(match[1], 10);
+      const chestType = match[2];
+      return { level, chestType };
+    } else {
+      return { level: null, chestType: originalString };
+    }
   }
 
 }
