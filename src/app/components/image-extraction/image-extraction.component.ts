@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import Tesseract from 'tesseract.js';
 import {ParsedChest} from "../../models/parsed-chest";
 import {ChestType} from "../../models/parsed-chest";

@@ -162,6 +162,11 @@ export class DataService {
         return data ? data : null;
     }
 
+    async getPlayerStats() {
+        const result = await this.supabase.rpc('get_player_stats');
+        return result.data;
+    }
+
     async addGroupMessage(groupId: any, message: any) {
         const user = await this.supabase.auth.getUser();
         if (user !== null) {

@@ -7,7 +7,5 @@
 <ion-content [fullscreen]="true">
     <input type="file" (change)="onFileSelected($event)" multiple/>
 
-    <div>
-        <p>{{ extractedText }}</p>
-    </div>
+    <button (click)="insertChestData()">Load Chests</button>
 </ion-content>

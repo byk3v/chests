@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import {ChestType, ParsedChest} from "../../models/parsed-chest";
 import Tesseract from "tesseract.js";
-import {createClient} from "@supabase/supabase-js";
-import {environment} from "../../../environments/environment";
 import {DataService} from "../../services/data.service";
 
 @Component({
@@ -32,14 +30,13 @@ export class UploadPage {
         alert('Skipping non-image file: ' + file.name);
       }
     }
-
   }
 
   async processImage(imageFile: File) {
     const imageBlob = await this.toBlob(imageFile);
     const { data: { text } } = await Tesseract.recognize(imageBlob, 'eng');
-    this.extractedText = text;
-    this.extractText();
+    //this.extractedText = text;
+    this.extractText(text);
   }
 
   toBlob(file: File): Promise<Blob> {
@@ -52,8 +49,8 @@ export class UploadPage {
     });
   }
 
-  extractText() {
-    const temp =  this.extractedText.replace(/[\r\n]+/g, ' ');
+  extractText(extractedText: string) {
+    const temp =  extractedText.replace(/[\r\n]+/g, ' ');
     const substrings = temp.split(/\s+(Crypt|Arena|Bank|Citadel(?! Chest)|Clan wealth|Epic inferno squad|personal reward|Epic Undead squad|Rush tournament| Heroic monster| Mercenary Exchange)/g);
 
     const parsedData = [];
@@ -79,7 +76,7 @@ export class UploadPage {
     }
 
     this.parsedData = parsedData;
-    this.insertChestData(parsedData);
+    //this.insertChestData(parsedData);
     console.log(this.parsedData);
   }
 
@@ -97,8 +94,9 @@ export class UploadPage {
     }
   }
 
-  insertChestData(data: ParsedChest[]){
-    this.dataService.insertChests(data);
+  insertChestData(){
+    console.log("antes de insertar", this.parsedData);
+    this.dataService.insertChests(this.parsedData);
   }
 
 }

@@ -147,6 +147,30 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+--get the main players info
+CREATE OR REPLACE FUNCTION get_player_stats()
+RETURNS TABLE (
+    player_name text,
+    number_common_rare integer, -- Explicitly specify integer type
+    number_epic_citadel integer -- Explicitly specify integer type
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.name AS player_name,
+        COALESCE(SUM(CASE WHEN c.chest_type_id IN (3, 5) THEN 1 ELSE 0 END)::integer, 0) AS number_common_rare,
+        COALESCE(SUM(CASE WHEN c.chest_type_id IN (4, 6) THEN 1 ELSE 0 END)::integer, 0) AS number_epic_citadel
+    FROM
+        player p
+    LEFT JOIN
+        chest c ON p.id = c.player_id
+    GROUP BY
+        p.id, p.name;
+END;
+$$ LANGUAGE plpgsql;
+
+
 INSERT INTO chest_type (source)
 VALUES
     ('Bank'),

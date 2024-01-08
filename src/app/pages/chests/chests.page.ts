@@ -20,7 +20,6 @@ export class ChestsPage implements OnInit {
       private alertController: AlertController,
       private loadingController: LoadingController,
       private navContoller: NavController,
-      private router: Router
   ) {
   }
 
@@ -30,7 +29,18 @@ export class ChestsPage implements OnInit {
   async ionViewWillEnter() {
     // @ts-ignore
     this.chests = await this.data.getChests();
+    await this.fetchPlayerStats();
     console.log('groups: ', this.chests);
+  }
+
+  async fetchPlayerStats() {
+    try {
+      const playerStats = await this.data.getPlayerStats();
+      console.log('Player Stats:', playerStats);
+      // Process the playerStats as needed
+    } catch (error) {
+      console.error('Error fetching player stats:', error);
+    }
   }
 
   signOut() {
